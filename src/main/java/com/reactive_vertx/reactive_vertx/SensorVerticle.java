@@ -47,21 +47,27 @@ public class SensorVerticle extends AbstractVerticle {
   private void getData(RoutingContext context) {
     System.out.println("Processing HTTP request from {} " + context.request().remoteAddress());
 //    logger.info("Processing HTTP request from {} ", context.request().remoteAddress());
-    JsonObject payload = new JsonObject()
-      .put("uuid", uuid)
-      .put("temperature", temperature)
-      .put("timestamp", System.currentTimeMillis());
+    JsonObject payload = createPayload();
     context.response()
       .putHeader("Content-Type", "application/json")
       .setStatusCode(200)
       .end(payload.encode());
   }
 
+  private JsonObject createPayload() {
+    return new JsonObject()
+      .put("uuid", uuid)
+      .put("temperature", temperature)
+      .put("timestamp", System.currentTimeMillis());
+  }
+
   private void updateTemperature(Long id) {
     temperature = temperature + (random.nextGaussian() / 2.0d);
 //    logger.info("Temperature updated: {} ", temperature);
-
     System.out.println("Temperature updated: {} " + temperature);
+
+    vertx.eventBus()
+      .publish("temperature.updates", createPayload());
   }
 
 }
