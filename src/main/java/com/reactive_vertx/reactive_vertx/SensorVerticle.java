@@ -37,6 +37,7 @@ public class SensorVerticle extends AbstractVerticle {
       .requestHandler(router)
       .listen(httpPort)
       .onSuccess(ok -> {
+        logger.info("http server running: http://127.0.0.1:{} ", httpPort);
         System.out.println("http server running: http://127.0.0.1:{} " + httpPort);
         startPromise.complete();
       })
@@ -45,6 +46,7 @@ public class SensorVerticle extends AbstractVerticle {
 
   private void getData(RoutingContext context) {
     System.out.println("Processing HTTP request from {} " + context.request().remoteAddress());
+//    logger.info("Processing HTTP request from {} ", context.request().remoteAddress());
     JsonObject payload = new JsonObject()
       .put("uuid", uuid)
       .put("temperature", temperature)
