@@ -1,5 +1,6 @@
 package com.reactive_vertx.reactive_vertx;
 
+import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
 //import io.vertx.core.impl.logging.LoggerFactory;
 
@@ -14,6 +15,7 @@ public class Main {
 
     Vertx vertx = Vertx.vertx();
     vertx.deployVerticle(new SensorVerticle());
+//    vertx.deployVerticle("SensorVerticle", new DeploymentOptions().setInstances(1));
   }
 
 }
