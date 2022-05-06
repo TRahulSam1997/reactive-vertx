@@ -12,12 +12,12 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Route;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 
 public class SensorVerticle extends AbstractVerticle {
 
-  private static final Logger logger = LoggerFactory.getLogger(SensorVerticle.class);
+//  private static final Logger logger = LoggerFactory.getLogger(SensorVerticle.class);
   private static final int httpPort = Integer.parseInt(System.getenv().getOrDefault(
     "HTTP_PORT", "8080"
   ));
@@ -37,7 +37,7 @@ public class SensorVerticle extends AbstractVerticle {
       .requestHandler(router)
       .listen(httpPort)
       .onSuccess(ok -> {
-        logger.info("http server running: http://127.0.0.1:{} ", httpPort);
+//        logger.info("http server running: http://127.0.0.1:{} ", httpPort);
         System.out.println("http server running: http://127.0.0.1:{} " + httpPort);
         startPromise.complete();
       })
