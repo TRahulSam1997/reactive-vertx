@@ -14,7 +14,7 @@ public class Main {
     System.out.println("Starting app... ");
 
     Vertx vertx = Vertx.vertx();
-    vertx.deployVerticle(new SensorVerticle());
+    vertx.deployVerticle(new SensorVerticle(), new DeploymentOptions().setInstances(1));
 //    vertx.deployVerticle("SensorVerticle", new DeploymentOptions().setInstances(1));
   }
 
