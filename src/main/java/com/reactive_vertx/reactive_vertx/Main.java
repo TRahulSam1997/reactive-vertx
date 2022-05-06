@@ -1,6 +1,8 @@
 package com.reactive_vertx.reactive_vertx;
 
+import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
+import io.vertx.core.json.JsonObject;
 //import io.vertx.core.impl.logging.LoggerFactory;
 
 //import org.slf4j.Logger;
@@ -11,8 +13,12 @@ public class Main {
 
   public static void main(String[] args) {
     Vertx vertx = Vertx.vertx();
-    vertx.deployVerticle(new SensorVerticle());
+    vertx.deployVerticle("SensorVerticle", new DeploymentOptions().setInstances(1));
 
+//    vertx.eventBus()
+//      .<JsonObject>consumer("temperature.updates", message -> {
+//        System.out.println(">>> {}" + message.body().encodePrettily());
+//      });
   }
 
 }
