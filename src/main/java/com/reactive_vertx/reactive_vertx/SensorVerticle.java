@@ -69,7 +69,6 @@ public class SensorVerticle extends AbstractVerticle {
     vertx.eventBus()
       .publish("temperature.updates", createPayload());
   }
-
 }
 
 
