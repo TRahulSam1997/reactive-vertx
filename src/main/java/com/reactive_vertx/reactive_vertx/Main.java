@@ -11,7 +11,7 @@ public class Main {
 
   public static void main(String[] args) {
     System.out.println("Starting app... ");
-    
+
     Vertx vertx = Vertx.vertx();
     vertx.deployVerticle(new SensorVerticle());
   }
