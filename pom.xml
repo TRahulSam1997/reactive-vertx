@@ -65,8 +65,13 @@
       <version>${junit-jupiter.version}</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-hazelcast</artifactId>
+      <version>4.2.7</version>
+    </dependency>
 
-<!--    <dependency>-->
+    <!--    <dependency>-->
 <!--      <groupId>com.google.flogger</groupId>-->
 <!--      <artifactId>flogger-log4j2-backend</artifactId>-->
 <!--      <version>0.7.4</version>-->
