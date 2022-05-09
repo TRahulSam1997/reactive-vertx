@@ -2,12 +2,19 @@ package com.reactive_vertx.reactive_vertx;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Promise;
+import io.vertx.core.Vertx;
+import io.vertx.core.VertxOptions;
 import io.vertx.core.eventbus.Message;
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
+import io.vertx.core.spi.cluster.ClusterManager;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.pgclient.PgConnectOptions;
 import io.vertx.pgclient.PgPool;
+import io.vertx.spi.cluster.hazelcast.HazelcastClusterManager;
 import io.vertx.sqlclient.PoolOptions;
+import io.vertx.sqlclient.Row;
 import io.vertx.sqlclient.SqlClient;
 
 public class PostgresApiVerticle extends AbstractVerticle {
@@ -45,7 +52,7 @@ public class PostgresApiVerticle extends AbstractVerticle {
       .requestHandler(router)
       .listen(httpPort)
       .onSuccess(ok -> {
-        System.out.println("http server running: http://127.0.0.1:{} " + httpPort);
+        System.out.println(this.getClass().getName() + ": http server running: http://127.0.0.1:{} " + httpPort);
         startPromise.complete();
       })
       .onFailure(startPromise::fail);
@@ -67,8 +74,40 @@ public class PostgresApiVerticle extends AbstractVerticle {
   private void getAllData(RoutingContext routingContext) {
     System.out.println("Requesting all data from {} " + routingContext.request().remoteAddress());
     String query = "select * from temperature.updates";
+    pgPool.preparedQuery(query)
+      .execute()
+      .onSuccess(rows -> {
+        JsonArray array = new JsonArray();
+        for (Row row : rows) {
+          array.add(new JsonObject()
+            .put("uuid", row.getString("uuid"))
+            .put("temperature", row.getDouble("value"))
+            .put("timestamp", row.getTemporal("tstamp").toString())
+          );
+        }
+        routingContext.response()
+          .putHeader("Content-Type", "application/json")
+          .end(new JsonObject().put("data", array).encode());
+      })
+      .onFailure(failure -> {
+        System.out.println("Woops " + failure);
+        routingContext.fail(500);
+      });
   }
 
   private <T> void recordTemperature(Message<T> tMessage) {
   }
+
+//  public static void main(String[] args) {
+//    ClusterManager mgr = new HazelcastClusterManager();
+//    VertxOptions options = new VertxOptions().setClusterManager(mgr);
+//
+//    Vertx.clusteredVertx(options)
+//      .onSuccess(vertx -> {
+//        vertx.deployVerticle(new PostgresApiVerticle());
+//      })
+//      .onFailure(failure -> {
+//        System.out.println("Woops " + failure);
+//      });
+//  }
 }

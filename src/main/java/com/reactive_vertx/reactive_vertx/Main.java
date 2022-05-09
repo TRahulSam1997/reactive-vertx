@@ -31,7 +31,7 @@ public class Main {
 
     Vertx.clusteredVertx(options)
       .onSuccess(vertx -> {
-        vertx.deployVerticle(new SensorVerticle());
+        vertx.deployVerticle(new PostgresApiVerticle());
       })
       .onFailure(failure -> {
         System.out.println("Woops " + failure);
