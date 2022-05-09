@@ -67,6 +67,29 @@ public class PostgresApiVerticle extends AbstractVerticle {
   }
 
   private void getLastFiveMinutes(RoutingContext routingContext) {
+    System.out.println("Requesting the data from the last 5 minutes from {} " + routingContext.request().remoteAddress());
+    String query = "select * from temperature where tstamp >= now() - INTERVAL '5 minutes'";
+
+    pgPool.preparedQuery(query)
+      .execute()
+      .onSuccess(rows -> {
+        JsonArray data = new JsonArray();
+        for (Row row : rows) {
+          data.add(new JsonObject()
+            .put("uuid", row.getString("uuid"))
+            .put("timestamp", row.getValue("tstamp").toString())
+            .put("value", row.getValue("value").toString())
+          );
+        }
+        routingContext.response()
+          .setStatusCode(200)
+          .putHeader("Content-Type", "application/json")
+          .end(new JsonObject().put("data", data).encode());
+      })
+      .onFailure(failure -> {
+        System.out.println("Woops " + failure);
+        routingContext.fail(500);
+      });
   }
 
   private void getData(RoutingContext routingContext) {
