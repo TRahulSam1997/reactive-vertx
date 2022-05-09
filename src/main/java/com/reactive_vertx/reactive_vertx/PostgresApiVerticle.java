@@ -73,7 +73,7 @@ public class PostgresApiVerticle extends AbstractVerticle {
 
   private void getAllData(RoutingContext routingContext) {
     System.out.println("Requesting all data from {} " + routingContext.request().remoteAddress());
-    String query = "select * from temperature.updates";
+    String query = "select * from temperature";
     pgPool.preparedQuery(query)
       .execute()
       .onSuccess(rows -> {
@@ -96,18 +96,7 @@ public class PostgresApiVerticle extends AbstractVerticle {
   }
 
   private <T> void recordTemperature(Message<T> tMessage) {
-  }
 
-//  public static void main(String[] args) {
-//    ClusterManager mgr = new HazelcastClusterManager();
-//    VertxOptions options = new VertxOptions().setClusterManager(mgr);
-//
-//    Vertx.clusteredVertx(options)
-//      .onSuccess(vertx -> {
-//        vertx.deployVerticle(new PostgresApiVerticle());
-//      })
-//      .onFailure(failure -> {
-//        System.out.println("Woops " + failure);
-//      });
-//  }
+
+  }
 }
