@@ -16,6 +16,7 @@ import io.vertx.spi.cluster.hazelcast.HazelcastClusterManager;
 import io.vertx.sqlclient.PoolOptions;
 import io.vertx.sqlclient.Row;
 import io.vertx.sqlclient.SqlClient;
+import io.vertx.sqlclient.Tuple;
 
 public class PostgresApiVerticle extends AbstractVerticle {
 
@@ -69,6 +70,31 @@ public class PostgresApiVerticle extends AbstractVerticle {
   }
 
   private void getData(RoutingContext routingContext) {
+    String query = "select tstamp, value from temperature where uuid = $1";
+    String uuid = routingContext.request().getParam("uuid");
+    System.out.println("Requesting the data for {} from {} " + uuid + " " + routingContext.request().remoteAddress());
+
+    pgPool.preparedQuery(query)
+      .execute(Tuple.of(uuid))
+      .onSuccess(rows -> {
+        JsonArray data = new JsonArray();
+        for (Row row : rows) {
+          data.add(new JsonObject()
+            .put("temperature", row.getDouble("value"))
+            .put("timestamp", row.getTemporal("tstamp").toString())
+          );
+        }
+        routingContext.response()
+          .setStatusCode(200)
+          .putHeader("Content-Type", "application/json")
+          .end(new JsonObject()
+            .put("uuid", uuid)
+            .put("data", data).encode());
+        })
+        .onFailure(failure -> {
+          System.out.println("Woops " + failure);
+          routingContext.fail(500);
+        });
   }
 
   private void getAllData(RoutingContext routingContext) {
