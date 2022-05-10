@@ -162,4 +162,18 @@ public class PostgresApiVerticle extends AbstractVerticle {
         System.out.println("Woops " + failure);
       });
   }
+
+  public static void main(String[] args) {
+    // Configuration code (omitted)
+    ClusterManager mgr = new HazelcastClusterManager();
+    VertxOptions options = new VertxOptions().setClusterManager(mgr);
+
+    Vertx.clusteredVertx(options)
+      .onSuccess(vertx -> {
+        vertx.deployVerticle(new PostgresApiVerticle());
+      })
+      .onFailure(failure -> {
+        System.out.println("Woops " + failure);
+      });
+  }
 }

@@ -27,16 +27,16 @@ public class Main {
       });
 
     // Configuration code (omitted)
-    ClusterManager mgr = new HazelcastClusterManager();
-    VertxOptions options = new VertxOptions().setClusterManager(mgr);
-
-    Vertx.clusteredVertx(options)
-      .onSuccess(vertx -> {
-        vertx.deployVerticle(new PostgresApiVerticle());
-      })
-      .onFailure(failure -> {
-        System.out.println("Woops " + failure);
-      });
+//    ClusterManager mgr = new HazelcastClusterManager();
+//    VertxOptions options = new VertxOptions().setClusterManager(mgr);
+//
+//    Vertx.clusteredVertx(options)
+//      .onSuccess(vertx -> {
+//        vertx.deployVerticle(new PostgresApiVerticle());
+//      })
+//      .onFailure(failure -> {
+//        System.out.println("Woops " + failure);
+//      });
   }
 
 }
