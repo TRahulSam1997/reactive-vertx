@@ -18,6 +18,10 @@ import io.vertx.sqlclient.Row;
 import io.vertx.sqlclient.SqlClient;
 import io.vertx.sqlclient.Tuple;
 
+import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+
 public class PostgresApiVerticle extends AbstractVerticle {
 
   private static final int httpPort = Integer.parseInt(System.getenv().getOrDefault(
@@ -144,8 +148,18 @@ public class PostgresApiVerticle extends AbstractVerticle {
       });
   }
 
-  private <T> void recordTemperature(Message<T> tMessage) {
-
-
+  private void recordTemperature(Message<JsonObject> message) {
+    JsonObject body = message.body();
+    String query = "insert into temperature(uuid, tstamp, value) values ($1, $2, $3);";
+    String uuid = body.getString("uuid");
+    OffsetDateTime timestamp = OffsetDateTime.ofInstant(Instant.ofEpochMilli(body.getLong("timestamp")), ZoneId.systemDefault());
+    Double temperature = body.getDouble("temperature");
+    Tuple tuple = Tuple.of(uuid, timestamp, temperature);
+    pgPool.preparedQuery(query)
+      .execute(tuple)
+      .onSuccess(rows -> System.out.println("Recorded {}" + tuple.deepToString()))
+      .onFailure(failure -> {
+        System.out.println("Woops " + failure);
+      });
   }
 }
