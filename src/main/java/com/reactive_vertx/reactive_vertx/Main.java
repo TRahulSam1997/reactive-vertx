@@ -17,14 +17,15 @@ public class Main {
   public static void main(String[] args) {
     System.out.println("Starting app... ");
 
-//    Vertx vertx = Vertx.vertx();
-//    vertx.deployVerticle(new SensorVerticle(), new DeploymentOptions().setInstances(1));
-//    vertx.deployVerticle("SensorVerticle", new DeploymentOptions().setInstances(1));
+    Vertx vertx1 = Vertx.vertx();
+    vertx1.deployVerticle(new SensorVerticle(), new DeploymentOptions().setInstances(1));
+    vertx1.deployVerticle("SensorVerticle", new DeploymentOptions().setInstances(1));
 
-//    vertx.eventBus()
-//      .<JsonObject>consumer("temperature.updates", jsonObjectMessage -> {
-//        System.out.println(">>> {}" + jsonObjectMessage.body().encodePrettily());
-//      });
+    vertx1.eventBus()
+      .<JsonObject>consumer("temperature.updates", jsonObjectMessage -> {
+        System.out.println(">>> {}" + jsonObjectMessage.body().encodePrettily());
+      });
+
     // Configuration code (omitted)
     ClusterManager mgr = new HazelcastClusterManager();
     VertxOptions options = new VertxOptions().setClusterManager(mgr);

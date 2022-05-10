@@ -157,7 +157,7 @@ public class PostgresApiVerticle extends AbstractVerticle {
     Tuple tuple = Tuple.of(uuid, timestamp, temperature);
     pgPool.preparedQuery(query)
       .execute(tuple)
-      .onSuccess(rows -> System.out.println("Recorded {}" + tuple.deepToString()))
+      .onSuccess(rows -> System.out.println(this.getClass().getName() + " recordTemperature:: Recorded {}" + tuple.deepToString()))
       .onFailure(failure -> {
         System.out.println("Woops " + failure);
       });
